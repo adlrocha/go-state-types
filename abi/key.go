@@ -23,7 +23,7 @@ func (k AddrKey) Key() string {
 
 // Adapts an address tuple as a mapping key.
 type AddrPairKey struct {
-	First address.Address
+	First  address.Address
 	Second address.Address
 }
 
@@ -33,8 +33,8 @@ func (k *AddrPairKey) Key() string {
 	return buf.String()
 }
 
-func NewAddrPairKey(first address.Address, second address.Address) *AddrPairKey{
-	return  &AddrPairKey{
+func NewAddrPairKey(first address.Address, second address.Address) *AddrPairKey {
+	return &AddrPairKey{
 		First:  first,
 		Second: second,
 	}
@@ -93,4 +93,13 @@ func ParseUIntKey(k string) (uint64, error) {
 		return 0, errors.New("failed to decode varint key")
 	}
 	return i, nil
+}
+
+// SubnetKey implements Keyer interface, so it can be used as a key for maps.
+type SubnetKey address.SubnetID
+
+var _ Keyer = address.SubnetID{}
+
+func (id SubnetKey) Key() string {
+	return address.SubnetID(id).Key()
 }
