@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/filecoin-project/go-state-types/builtin/v8/account"
 	"github.com/filecoin-project/go-state-types/builtin/v8/cron"
+	"github.com/filecoin-project/go-state-types/builtin/v8/evm"
 	init_ "github.com/filecoin-project/go-state-types/builtin/v8/init"
 	"github.com/filecoin-project/go-state-types/builtin/v8/market"
 	"github.com/filecoin-project/go-state-types/builtin/v8/miner"
@@ -39,6 +40,8 @@ func main() {
 		init_.ConstructorParams{},
 		init_.ExecParams{},
 		init_.ExecReturn{},
+		init_.InstallParams{},
+		init_.InstallReturn{},
 	); err != nil {
 		panic(err)
 	}
@@ -195,9 +198,20 @@ func main() {
 		panic(err)
 	}
 
+	if err := gen.WriteTupleEncodersToFile("./builtin/v8/evm/cbor_gen.go", "evm",
+		// actor state
+		evm.State{},
+		// method params and returns
+		evm.ConstructorParams{},
+		evm.InvokeParams{},
+	); err != nil {
+		panic(err)
+	}
+
 	if err := gen.WriteTupleEncodersToFile("./builtin/v8/util/smoothing/cbor_gen.go", "smoothing",
 		smoothing.FilterEstimate{},
 	); err != nil {
 		panic(err)
 	}
+
 }
